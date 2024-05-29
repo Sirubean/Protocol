@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Protocol Search</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #eef2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .navbar, .sub-navbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .navbar button, .sub-navbar button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+            flex: 1 1 calc(30% - 10px); /* Added to make buttons responsive */
+        }
+        .navbar button:hover, .sub-navbar button:hover {
+            background-color: #2980b9;
+        }
+        .sub-navbar button {
+            background-color: #27ae60; /* Different color for sub-category buttons */
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button.search {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button.search:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: left;
+        }
+        h2 {
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        h4 {
+            color: #2c3e50;
+            margin-bottom: 6px;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #555;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.2em;
+            }
+            input[type="text"] {
+                padding: 10px;
+            }
+            button {
+                padding: 10px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>ENT Lab Protocol Search ver 1.0</h1>
+        <div class="navbar" id="mainNavbar">
+            <button onclick="setCategory('culture')">Culture</button>
+            <button onclick="setCategory('PCR')">PCR</button>
+            <button onclick="setCategory('western blot')">Western Blot</button>
+            <button onclick="setCategory('ICC&IHC')">ICC&IHC</button>
+            <button onclick="setCategory('NGS')">NGS</button>
+            <button onclick="setCategory('single cell analysis')">Single Cell Analysis</button>
+        </div>
+        <div class="sub-navbar" id="subNavbar" style="display: none;">
+            <!-- Sub-category buttons will be dynamically added here -->
+        </div>
+        <input type="text" id="searchInput" placeholder="Enter protocol name..." />
+        <button class="search" onclick="searchProtocol()">Search</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        let currentCategory = '';
+
+        function setCategory(category) {
+            currentCategory = category.toLowerCase();
+            document.getElementById('searchInput').placeholder = `Enter ${category} protocol name...`;
+            document.getElementById('result').innerHTML = '';
+
+            const subNavbar = document.getElementById('subNavbar');
+            subNavbar.style.display = 'none';
+            subNavbar.innerHTML = '';
+
+            if (category.toLowerCase() === 'culture') {
+                const subCategories = [
+                    'Primary nasal fibroblast culture',
+                    'Nasal fibroblast culture',
+                    'Primary nasal epithelial cell culture',
+                    'Nasal epithelial cell culture',
+                    'Air-Liquid interface culture',
+                    'Fibroblast spheroid culture',
+                    'EOL-1 culture',
+                    'MG63 culture',
+                    'HL60 culture'
+                ];
+
+                subCategories.forEach(subCategory => {
+                    const button = document.createElement('button');
+                    button.textContent = subCategory;
+                    button.onclick = () => {
+                        document.getElementById('searchInput').value = subCategory.toLowerCase();
+                        searchProtocol();
+                    };
+                    subNavbar.appendChild(button);
+                });
+
+                subNavbar.style.display = 'flex';
+            }
+        }
+
+        function searchProtocol() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const result = document.getElementById('result');
+
+            if (input === 'primary nasal fibroblast culture') {
+                result.innerHTML = `
+                    <h2>Fibroblast Culture Protocol</h2>
+                    <h3>Materials and Reagents:</h3>
+                    <ul>
+                        <li>Nasal tissue sample (e.g., from a biopsy)</li>
+                        <li>Phosphate-buffered saline (PBS)</li>
+                        <li>Sterile surgical instruments (scissors, forceps)</li>
+                        <li>Collagenase type I solution (0.1% in PBS)</li>
+                        <li>Trypsin-EDTA solution (0.05%)</li>
+                        <li>Dulbecco’s Modified Eagle Medium (DMEM) with high glucose</li>
+                        <li>Fetal bovine serum (FBS)</li>
+                        <li>Penicillin-streptomycin solution</li>
+                        <li>Cell culture flasks and dishes</li>
+                        <li>Centrifuge and tubes</li>
+                        <li>Incubator set at 37°C with 5% CO2</li>
+                    </ul>
+                    <h3>Procedure:</h3>
+                    <h4>1. Tissue Collection:</h4>
+                    <p>
+                        - Obtain a nasal tissue sample under sterile conditions.<br>
+                        - Immediately place the tissue in cold PBS to prevent drying.
+                    </p>
+                    <h4>2. Tissue Preparation:</h4>
+                    <p>
+                        - Transfer the tissue sample to a sterile Petri dish.<br>
+                        - Mince the tissue into small pieces (1-2 mm) using sterile scissors and forceps.
+                    </p>
+                    <h4>3. Enzymatic Digestion:</h4>
+                    <p>
+                        - Prepare a collagenase solution by dissolving collagenase type I in PBS to a final concentration of 0.1%.<br>
+                        - Add the minced tissue to the collagenase solution in a sterile tube.<br>
+                        - Incubate the tube at 37°C for 2-3 hours with gentle shaking.
+                    </p>
+                    <h4>4. Cell Isolation:</h4>
+                    <p>
+                        - After digestion, centrifuge the mixture at 300 g for 5 minutes to pellet the cells.<br>
+                        - Remove the supernatant and resuspend the cell pellet in fresh DMEM containing 10% FBS and 1% penicillin-streptomycin.<br>
+                        - Filter the cell suspension through a sterile cell strainer (70 µm) to remove undigested tissue.
+                    </p>
+                    <h4>5. Cell Seeding:</h4>
+                    <p>
+                        - Plate the filtered cell suspension into a culture flask or dish.<br>
+                        - Place the culture flask in an incubator set at 37°C with 5% CO2.
+                    </p>
+                    <h4>6. Culture Maintenance:</h4>
+                    <p>
+                        - Change the culture medium every 2-3 days to remove non-adherent cells and debris.<br>
+                        - Monitor the cells regularly under a microscope. Fibroblasts will adhere to the culture surface and start spreading within a few days.
+                    </p>
+                    <h4>7. Subculturing:</h4>
+                    <p>
+                        - Once the cells reach 70-80% confluence, detach them using trypsin-EDTA solution.<br>
+                        - Wash the cells with PBS, add trypsin-EDTA, and incubate at 37°C for 2-3 minutes until the cells detach.<br>
+                        - Neutralize trypsin by adding an equal volume of culture medium containing FBS.<br>
+                        - Centrifuge the cell suspension, resuspend the cell pellet in fresh culture medium, and plate into new culture flasks at the desired density.
+                    </p>
+                    <h4>Notes:</h4>
+                    <p>
+                        - Ensure all procedures are carried out under sterile conditions to prevent contamination.<br>
+                        - The success of primary culture depends on the quality of the tissue sample and the efficiency of the enzymatic digestion.<br>
+                        - Fibroblasts should display a spindle-shaped morphology. If other cell types are present, additional purification steps might be necessary.<br>
+                        - This protocol provides a general guide for culturing primary nasal fibroblasts. Adjustments may be necessary based on specific experimental requirements or tissue conditions.
+                    </p>
+                `;
+            } else if (currentCategory === 'PCR' && ['pcr', 'polymerase chain reaction'].includes(input)) {
+                result.innerHTML = `
+                    <h2>PCR Protocol</h2>
+                    <!-- PCR protocol details go here -->
+                `;
+            } else if (currentCategory === 'western blot' && ['western blot', 'protein detection'].includes(input)) {
+                result.innerHTML = `
+                    <h2>Western Blot Protocol</h2>
+                    <!-- Western blot protocol details go here -->
+                `;
+            } else if (currentCategory === 'ICC&IHC' && ['icc', 'ihc', 'immunocytochemistry', 'immunohistochemistry'].includes(input)) {
+                result.innerHTML = `
+                    <h2>ICC & IHC Protocol</h2>
+                    <!-- ICC & IHC protocol details go here -->
+                `;
+            } else if (currentCategory === 'NGS' && ['ngs', 'next generation sequencing'].includes(input)) {
+                result.innerHTML = `
+                    <h2>NGS Protocol</h2>
+                    <!-- NGS protocol details go here -->
+                `;
+            } else if (currentCategory === 'single cell analysis' && ['single cell', 'scrna-seq', 'single cell rna sequencing'].includes(input)) {
+                result.innerHTML = `
+                    <h2>Single Cell Analysis Protocol</h2>
+                    <!-- Single cell analysis protocol details go here -->
+                `;
+            } else {
+                result.innerHTML = '<p>No matching protocol found. Please try another search term.</p>';
+            }
+        }
+
+        function capitalize(str) {
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+    </script>
+</body>
+</html>
