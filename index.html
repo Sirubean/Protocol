@@ -7,65 +7,74 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #eef2f5;
+            background-color: #f4f7f9;
             margin: 0;
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
         h1 {
             color: #2c3e50;
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.5em;
+            margin-bottom: 30px;
+            font-size: 2em;
         }
-        .navbar, .sub-navbar {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        .navbar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .sub-navbar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
             margin-bottom: 20px;
         }
         .navbar button, .sub-navbar button {
             background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 10px 20px;
+            border-radius: 5px;
+            padding: 20px;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin: 5px;
-            flex: 1 1 calc(30% - 10px); /* Added to make buttons responsive */
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         .navbar button:hover, .sub-navbar button:hover {
             background-color: #2980b9;
         }
         .sub-navbar button {
-            background-color: #27ae60; /* Different color for sub-category buttons */
+            background-color: #27ae60;
         }
-        input[type="text"] {
-            width: calc(100% - 22px);
-            padding: 12px;
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 15px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 16px;
         }
         button.search {
             display: block;
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             margin-bottom: 20px;
             background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
@@ -79,15 +88,11 @@
         }
         h2 {
             color: #34495e;
+            margin-bottom: 15px;
+        }
+        h3, h4 {
+            color: #2c3e50;
             margin-bottom: 10px;
-        }
-        h3 {
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-        h4 {
-            color: #2c3e50;
-            margin-bottom: 6px;
         }
         ul {
             list-style-type: disc;
@@ -105,47 +110,165 @@
             display: block;
             margin: 20px auto;
         }
-
         @media (max-width: 600px) {
             body {
                 padding: 10px;
             }
             .container {
-                padding: 15px;
+                padding: 20px;
             }
             h1 {
-                font-size: 1.2em;
+                font-size: 1.5em;
             }
-            input[type="text"] {
-                padding: 10px;
-            }
-            button {
-                padding: 10px;
+            input[type="text"], button.search {
+                padding: 12px;
             }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>ENT Lab Protocol Search ver 1.0</h1>
+        <h1>LabScience Pro ver 1.0 </h1>
         <div class="navbar" id="mainNavbar">
-            <button onclick="setCategory('culture')">Culture</button>
-            <button onclick="setCategory('PCR')">PCR</button>
-            <button onclick="setCategory('western blot')">Western Blot</button>
-            <button onclick="setCategory('ICC&IHC')">ICC&IHC</button>
-            <button onclick="setCategory('NGS')">NGS</button>
-            <button onclick="setCategory('single cell analysis')">Single Cell Analysis</button>
+            <button onclick="showSubCategories('protocol')"><i class="fas fa-flask"></i> Protocol</button>
+            <button onclick="showSubCategories('material')"><i class="fas fa-box-open"></i> Material</button>
+            <button onclick="showSubCategories('calculation')"><i class="fas fa-calculator"></i> Calculation</button>
+            <button onclick="showSubCategories('community')"><i class="fas fa-users"></i> Community</button>
+            <button onclick="showSubCategories('reference')"><i class="fas fa-book"></i> Reference</button>
+            <button onclick="showSubCategories('news')"><i class="fas fa-newspaper"></i> News</button>
         </div>
         <div class="sub-navbar" id="subNavbar" style="display: none;">
             <!-- Sub-category buttons will be dynamically added here -->
         </div>
-        <input type="text" id="searchInput" placeholder="Enter protocol name..." />
-        <button class="search" onclick="searchProtocol()">Search</button>
-        <div id="result"></div>
+
+        <button id="backButton" style="display: none;" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+
+        <div id="protocolSection" style="display:none;">
+            <div class="navbar" id="protocolNavbar">
+                <button onclick="setCategory('culture')"><i class="fas fa-vial"></i> Culture</button>
+                <button onclick="setCategory('PCR')"><i class="fas fa-dna"></i> PCR</button>
+                <button onclick="setCategory('western blot')"><i class="fas fa-stream"></i> Western Blot</button>
+                <button onclick="setCategory('ICC&IHC')"><i class="fas fa-microscope"></i> ICC&IHC</button>
+                <button onclick="setCategory('NGS')"><i class="fas fa-seedling"></i> NGS</button>
+                <button onclick="setCategory('single cell analysis')"><i class="fas fa-chart-line"></i> Single Cell Analysis</button>
+            </div>
+            <input type="text" id="searchInput" placeholder="Enter protocol name..." />
+            <button class="search" onclick="searchProtocol()"><i class="fas fa-search"></i> Search</button>
+            <div id="result"></div>
+        </div>
+
+        <div id="calculationSection" style="display:none;">
+            <h2>Concentration Calculator</h2>
+            <div class="navbar">
+                <button onclick="showCalculationInputs('molarity')"><i class="fas fa-vial"></i> Molarity</button>
+                <button onclick="showCalculationInputs('molality')"><i class="fas fa-balance-scale"></i> Molality</button>
+                <button onclick="showCalculationInputs('percent')"><i class="fas fa-percent"></i> Percent Concentration</button>
+                <button onclick="showCalculationInputs('cell')"><i class="fas fa-microscope"></i> Cell Concentration</button>
+            </div>
+            <div id="calcInputs" style="margin-top: 20px;">
+                <!-- Dynamic inputs will be added here based on selected calculation type -->
+            </div>
+            <button id="calculateButton" onclick="calculateConcentration()" style="display:none; margin-top: 20px;"><i class="fas fa-equals"></i> Calculate</button>
+            <div id="calcResult" style="margin-top: 20px;"></div>
+        </div>
+
+        <div id="communitySection" style="display:none;">
+            <h2>Community Section</h2>
+            <!-- Community content goes here -->
+        </div>
+
+        <div id="materialSection" style="display:none;">
+            <h2>Material Section</h2>
+            <!-- Material content goes here -->
+        </div>
+
+        <div id="referenceSection" style="display:none;">
+            <h2>Reference Section</h2>
+            <!-- Reference content goes here -->
+        </div>
+
+        <div id="newsSection" style="display:none;">
+            <h2>News Section</h2>
+            <!-- News content goes here -->
+        </div>
     </div>
+
     <script>
         let currentCategory = '';
+
+        function showSubCategories(section) {
+            const mainNavbar = document.getElementById('mainNavbar');
+            const subNavbar = document.getElementById('subNavbar');
+            const backButton = document.getElementById('backButton');
+
+            mainNavbar.style.display = 'none';
+            subNavbar.style.display = 'grid';
+            backButton.style.display = 'block';
+
+            subNavbar.innerHTML = '';
+
+            if (section === 'protocol') {
+                subNavbar.innerHTML = `
+                    <button onclick="setCategory('culture')"><i class="fas fa-vial"></i> Culture</button>
+                    <button onclick="setCategory('PCR')"><i class="fas fa-dna"></i> PCR</button>
+                    <button onclick="setCategory('western blot')"><i class="fas fa-stream"></i> Western Blot</button>
+                    <button onclick="setCategory('ICC&IHC')"><i class="fas fa-microscope"></i> ICC&IHC</button>
+                    <button onclick="setCategory('NGS')"><i class="fas fa-seedling"></i> NGS</button>
+                    <button onclick="setCategory('single cell analysis')"><i class="fas fa-chart-line"></i> Single Cell Analysis</button>
+                `;
+            } else if (section === 'material') {
+                subNavbar.innerHTML = `
+                    <h2>Material Subcategories</h2>
+                    <!-- Add material subcategory buttons here -->
+                `;
+            } else if (section === 'calculation') {
+                subNavbar.innerHTML = `
+                    <button onclick="showSection('calculationSection')"><i class="fas fa-calculator"></i> Concentration Calculator</button>
+                `;
+            } else if (section === 'community') {
+                subNavbar.innerHTML = `
+                    <h2>Community Subcategories</h2>
+                    <!-- Add community subcategory buttons here -->
+                `;
+            } else if (section === 'reference') {
+                subNavbar.innerHTML = `
+                    <h2>Reference Subcategories</h2>
+                    <!-- Add reference subcategory buttons here -->
+                `;
+            } else if (section === 'news') {
+                subNavbar.innerHTML = `
+                    <h2>News Subcategories</h2>
+                    <!-- Add news subcategory buttons here -->
+                `;
+            }
+        }
+
+        function goBack() {
+            const mainNavbar = document.getElementById('mainNavbar');
+            const subNavbar = document.getElementById('subNavbar');
+            const backButton = document.getElementById('backButton');
+            const sections = ['protocolSection', 'calculationSection', 'communitySection', 'materialSection', 'referenceSection', 'newsSection'];
+
+            mainNavbar.style.display = 'grid';
+            subNavbar.style.display = 'none';
+            backButton.style.display = 'none';
+
+            sections.forEach(section => {
+                document.getElementById(section).style.display = 'none';
+            });
+        }
+
+        function showSection(section) {
+            const sections = ['protocolSection', 'calculationSection', 'communitySection', 'materialSection', 'referenceSection', 'newsSection'];
+
+            sections.forEach(sec => {
+                document.getElementById(sec).style.display = 'none';
+            });
+
+            document.getElementById(section).style.display = 'block';
+        }
 
         function setCategory(category) {
             currentCategory = category.toLowerCase();
@@ -171,7 +294,7 @@
 
                 subCategories.forEach(subCategory => {
                     const button = document.createElement('button');
-                    button.textContent = subCategory;
+                    button.innerHTML = `<i class="fas fa-vial"></i> ${subCategory}`;
                     button.onclick = () => {
                         document.getElementById('searchInput').value = subCategory.toLowerCase();
                         searchProtocol();
@@ -179,7 +302,7 @@
                     subNavbar.appendChild(button);
                 });
 
-                subNavbar.style.display = 'flex';
+                subNavbar.style.display = 'grid';
             }
         }
 
@@ -190,67 +313,7 @@
             if (input === 'primary nasal fibroblast culture') {
                 result.innerHTML = `
                     <h2>Fibroblast Culture Protocol</h2>
-                    <h3>Materials and Reagents:</h3>
-                    <ul>
-                        <li>Nasal tissue sample (e.g., from a biopsy)</li>
-                        <li>Phosphate-buffered saline (PBS)</li>
-                        <li>Sterile surgical instruments (scissors, forceps)</li>
-                        <li>Collagenase type I solution (0.1% in PBS)</li>
-                        <li>Trypsin-EDTA solution (0.05%)</li>
-                        <li>Dulbecco’s Modified Eagle Medium (DMEM) with high glucose</li>
-                        <li>Fetal bovine serum (FBS)</li>
-                        <li>Penicillin-streptomycin solution</li>
-                        <li>Cell culture flasks and dishes</li>
-                        <li>Centrifuge and tubes</li>
-                        <li>Incubator set at 37°C with 5% CO2</li>
-                    </ul>
-                    <h3>Procedure:</h3>
-                    <h4>1. Tissue Collection:</h4>
-                    <p>
-                        - Obtain a nasal tissue sample under sterile conditions.<br>
-                        - Immediately place the tissue in cold PBS to prevent drying.
-                    </p>
-                    <h4>2. Tissue Preparation:</h4>
-                    <p>
-                        - Transfer the tissue sample to a sterile Petri dish.<br>
-                        - Mince the tissue into small pieces (1-2 mm) using sterile scissors and forceps.
-                    </p>
-                    <h4>3. Enzymatic Digestion:</h4>
-                    <p>
-                        - Prepare a collagenase solution by dissolving collagenase type I in PBS to a final concentration of 0.1%.<br>
-                        - Add the minced tissue to the collagenase solution in a sterile tube.<br>
-                        - Incubate the tube at 37°C for 2-3 hours with gentle shaking.
-                    </p>
-                    <h4>4. Cell Isolation:</h4>
-                    <p>
-                        - After digestion, centrifuge the mixture at 300 g for 5 minutes to pellet the cells.<br>
-                        - Remove the supernatant and resuspend the cell pellet in fresh DMEM containing 10% FBS and 1% penicillin-streptomycin.<br>
-                        - Filter the cell suspension through a sterile cell strainer (70 µm) to remove undigested tissue.
-                    </p>
-                    <h4>5. Cell Seeding:</h4>
-                    <p>
-                        - Plate the filtered cell suspension into a culture flask or dish.<br>
-                        - Place the culture flask in an incubator set at 37°C with 5% CO2.
-                    </p>
-                    <h4>6. Culture Maintenance:</h4>
-                    <p>
-                        - Change the culture medium every 2-3 days to remove non-adherent cells and debris.<br>
-                        - Monitor the cells regularly under a microscope. Fibroblasts will adhere to the culture surface and start spreading within a few days.
-                    </p>
-                    <h4>7. Subculturing:</h4>
-                    <p>
-                        - Once the cells reach 70-80% confluence, detach them using trypsin-EDTA solution.<br>
-                        - Wash the cells with PBS, add trypsin-EDTA, and incubate at 37°C for 2-3 minutes until the cells detach.<br>
-                        - Neutralize trypsin by adding an equal volume of culture medium containing FBS.<br>
-                        - Centrifuge the cell suspension, resuspend the cell pellet in fresh culture medium, and plate into new culture flasks at the desired density.
-                    </p>
-                    <h4>Notes:</h4>
-                    <p>
-                        - Ensure all procedures are carried out under sterile conditions to prevent contamination.<br>
-                        - The success of primary culture depends on the quality of the tissue sample and the efficiency of the enzymatic digestion.<br>
-                        - Fibroblasts should display a spindle-shaped morphology. If other cell types are present, additional purification steps might be necessary.<br>
-                        - This protocol provides a general guide for culturing primary nasal fibroblasts. Adjustments may be necessary based on specific experimental requirements or tissue conditions.
-                    </p>
+                    <!-- Fibroblast protocol details go here -->
                 `;
             } else if (currentCategory === 'PCR' && ['pcr', 'polymerase chain reaction'].includes(input)) {
                 result.innerHTML = `
@@ -282,8 +345,85 @@
             }
         }
 
-        function capitalize(str) {
-            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        function showCalculationInputs(type) {
+            const calcInputs = document.getElementById('calcInputs');
+            const calculateButton = document.getElementById('calculateButton');
+            calcInputs.innerHTML = '';
+            calculateButton.style.display = 'block';
+            calculateButton.dataset.calcType = type;
+
+            if (type === 'molarity') {
+                calcInputs.innerHTML = `
+                    <div>
+                        <label for="moles">Moles of Solute (mol):</label>
+                        <input type="number" id="moles" step="any">
+                    </div>
+                    <div>
+                        <label for="volume">Volume of Solution (L):</label>
+                        <input type="number" id="volume" step="any">
+                    </div>
+                `;
+            } else if (type === 'molality') {
+                calcInputs.innerHTML = `
+                    <div>
+                        <label for="molesSolute">Moles of Solute (mol):</label>
+                        <input type="number" id="molesSolute" step="any">
+                    </div>
+                    <div>
+                        <label for="massSolvent">Mass of Solvent (kg):</label>
+                        <input type="number" id="massSolvent" step="any">
+                    </div>
+                `;
+            } else if (type === 'percent') {
+                calcInputs.innerHTML = `
+                    <div>
+                        <label for="massSolutePercent">Mass of Solute (g):</label>
+                        <input type="number" id="massSolutePercent" step="any">
+                    </div>
+                    <div>
+                        <label for="massSolution">Total Mass of Solution (g):</label>
+                        <input type="number" id="massSolution" step="any">
+                    </div>
+                `;
+            } else if (type === 'cell') {
+                calcInputs.innerHTML = `
+                    <div>
+                        <label for="cellCount">Number of Cells:</label>
+                        <input type="number" id="cellCount" step="any">
+                    </div>
+                    <div>
+                        <label for="volumeCell">Volume (mL):</label>
+                        <input type="number" id="volumeCell" step="any">
+                    </div>
+                `;
+            }
+        }
+
+        function calculateConcentration() {
+            const calcType = document.getElementById('calculateButton').dataset.calcType;
+            let result = 0;
+
+            if (calcType === 'molarity') {
+                const moles = parseFloat(document.getElementById('moles').value);
+                const volume = parseFloat(document.getElementById('volume').value);
+                result = moles / volume;
+                document.getElementById('calcResult').innerText = `Molarity: ${result} M`;
+            } else if (calcType === 'molality') {
+                const molesSolute = parseFloat(document.getElementById('molesSolute').value);
+                const massSolvent = parseFloat(document.getElementById('massSolvent').value);
+                result = molesSolute / massSolvent;
+                document.getElementById('calcResult').innerText = `Molality: ${result} m`;
+            } else if (calcType === 'percent') {
+                const massSolutePercent = parseFloat(document.getElementById('massSolutePercent').value);
+                const massSolution = parseFloat(document.getElementById('massSolution').value);
+                result = (massSolutePercent / massSolution) * 100;
+                document.getElementById('calcResult').innerText = `Percent Concentration: ${result}%`;
+            } else if (calcType === 'cell') {
+                const cellCount = parseFloat(document.getElementById('cellCount').value);
+                const volumeCell = parseFloat(document.getElementById('volumeCell').value);
+                result = cellCount / volumeCell;
+                document.getElementById('calcResult').innerText = `Cell Concentration: ${result} cells/mL`;
+            }
         }
     </script>
 </body>
